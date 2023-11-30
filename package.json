@@ -1,0 +1,16 @@
+{
+  "name": "not-a-github-clone",
+  "version": "0.0.0",
+  "private": "true",
+  "workspaces": ["packages/**"],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Alegiter/not-a-github-clone.git"
+  },
+  "author": "Vladimir Sitnik @Alegiter",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Alegiter/not-a-github-clone/issues"
+  },
+  "homepage": "https://github.com/Alegiter/not-a-github-clone#readme"
+}
