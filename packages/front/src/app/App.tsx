@@ -1,11 +1,11 @@
 import './App.css'
-import { LoginPageUi } from '~/pages/login'
+import { Router } from './Router'
 
 function App() {
 
-  return (<>
-    <LoginPageUi/>
-  </>)
+  return (
+    <Router />
+  )
 }
 
 export default App

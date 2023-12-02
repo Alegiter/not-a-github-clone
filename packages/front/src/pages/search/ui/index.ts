@@ -1,0 +1,1 @@
+export { SearchPage as SearchPageUi } from "./Search"

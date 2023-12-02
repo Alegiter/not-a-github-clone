@@ -1,19 +1,24 @@
-import { FunctionComponent, memo } from "react"
+import { FunctionComponent, memo, useLayoutEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { loadGithubUserAccessToken, redirectToGithubAppAuthorizationUrl } from "~/shared/api"
+import { ROUTES } from "~/shared/config"
 
 const code = new URLSearchParams(window.location.search).get("code")
 
-if (code) {
-    loadGithubUserAccessToken(code)
-        .then(() => {
-            // TODO: navigate to search page
-        })
-        .catch(() => {
-            // TODO: handle error
-        })
-}
-
 export const LoginPage: FunctionComponent = memo(function LoginPage() {
+    const navigate = useNavigate()
+
+    useLayoutEffect(() => {
+        if (code) {
+            loadGithubUserAccessToken(code)
+                .then(() => {
+                    navigate(ROUTES.SEARCH)
+                })
+                .catch(() => {
+                    // TODO: handle error
+                })
+        }
+    }, [navigate])
 
     if (!code) {
         return (

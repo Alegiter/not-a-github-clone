@@ -17,6 +17,10 @@ export default defineConfig(({ mode }) => {
     throw "Env variables 'CLIENT_ID' and 'CLIENT_SECRET' for Guthib App are not provided"
   }
 
+  if (!env.CLIENT_REDIRECT_URI) {
+    throw "Env variable CLIENT_REDIRECT_URI for Github App is not provided"
+  }
+
   return {
     plugins: [react(), tsconfigPaths()],
     server: {
@@ -28,7 +32,7 @@ export default defineConfig(({ mode }) => {
             proxy.on("proxyReq", (_, req, res) => {
               console.log("proxy | configure | redirect authorize to github app")
               const path = req.url
-              res.writeHead(301, { Location: `${github.target}${path}?client_id=${env.CLIENT_ID}` })
+              res.writeHead(301, { Location: `${github.target}${path}?client_id=${env.CLIENT_ID}&redirect_uri=${env.CLIENT_REDIRECT_URI}` })
             })
           },
         },
