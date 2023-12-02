@@ -1,7 +1,47 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
+import path from "path"
 import react from '@vitejs/plugin-react'
+import tsconfigPaths from "vite-tsconfig-paths"
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
+const root = path.resolve(process.cwd(), "..", "..")
+
+const github = {
+  target: "https://github.com",
+}
+
+
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, root, '')
+
+  if (!env.CLIENT_ID || !env.CLIENT_SECRET) {
+    throw "Env variables 'CLIENT_ID' and 'CLIENT_SECRET' for Guthib App are not provided"
+  }
+
+  return {
+    plugins: [react(), tsconfigPaths()],
+    server: {
+      proxy: {
+        "/login/oauth/authorize": {
+          target: github.target,
+          changeOrigin: true,
+          configure(proxy) {
+            proxy.on("proxyReq", (_, req, res) => {
+              console.log("proxy | configure | redirect authorize to github app")
+              const path = req.url
+              res.writeHead(301, { Location: `${github.target}${path}?client_id=${env.CLIENT_ID}` })
+            })
+          },
+        },
+        "/login/oauth/access_token?code": {
+          target: github.target,
+          changeOrigin: true,
+          rewrite(path) {
+            console.log("proxy | rewrite | add client secret")
+
+            return `${path}&client_id=${env.CLIENT_ID}&client_secret=${env.CLIENT_SECRET}`
+          },
+        },
+      }
+    }
+  }
 })
