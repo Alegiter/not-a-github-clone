@@ -43,6 +43,10 @@ const router = createHashRouter([
         path: ROUTES.SEARCH,
         element: <SearchPageUi />,
         loader: authGuard
+    },
+    {
+        path: "*",
+        loader: () => redirect(ROUTES.LOGIN)
     }
 ])
 
