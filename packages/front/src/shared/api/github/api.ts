@@ -1,6 +1,6 @@
-export const redirectToAppAuthorizationUrl = `/login/oauth/authorize`
+import { store } from "~/shared/model"
 
-let token: string | undefined
+export const redirectToAppAuthorizationUrl = `/login/oauth/authorize`
 
 export async function loadUserAccessToken(code: string): Promise<void> {
     const url = `/login/oauth/access_token?code=${code}`
@@ -12,5 +12,7 @@ export async function loadUserAccessToken(code: string): Promise<void> {
     if (!accessToken) {
         throw "No access token loaded"
     }
-    token = accessToken
+    console.log("loadUserAccessToken | consider logged in");
+    store.githubAccessToken = accessToken
+    store.isLoggedIn = true
 }
