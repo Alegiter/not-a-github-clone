@@ -6,6 +6,14 @@ import { loadGithubUserAccessToken } from "~/shared/api"
 import { ROUTES } from "~/shared/config"
 import { store } from "~/shared/model"
 
+function authGuard() {
+    if (store.isLoggedIn) {
+        return null
+    }
+
+    return redirect(ROUTES.LOGIN)
+}
+
 const router = createHashRouter([
     {
         path: ROUTES.LOGIN,
@@ -34,6 +42,7 @@ const router = createHashRouter([
     {
         path: ROUTES.SEARCH,
         element: <SearchPageUi />,
+        loader: authGuard
     }
 ])
 
