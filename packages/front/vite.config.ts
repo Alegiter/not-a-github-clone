@@ -7,18 +7,21 @@ const root = path.resolve(process.cwd(), "..", "..")
 
 const github = {
   target: "https://github.com",
+  api: {
+    target: "https://api.github.com"
+  }
 }
-
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, root, '')
+  Object.assign(process.env, env)
 
   if (!env.CLIENT_ID || !env.CLIENT_SECRET) {
-    throw "Env variables 'CLIENT_ID' and 'CLIENT_SECRET' for Guthib App are not provided"
+    throw new Error("Env variables 'CLIENT_ID' and 'CLIENT_SECRET' for Guthib App are not provided")
   }
 
   if (!env.CLIENT_REDIRECT_URI) {
-    throw "Env variable CLIENT_REDIRECT_URI for Github App is not provided"
+    throw new Error("Env variable CLIENT_REDIRECT_URI for Github App is not provided")
   }
 
   return {
@@ -45,6 +48,10 @@ export default defineConfig(({ mode }) => {
             return `${path}&client_id=${env.CLIENT_ID}&client_secret=${env.CLIENT_SECRET}`
           },
         },
+        "/graphql": {
+          target: github.api.target,
+          changeOrigin: true
+        }
       }
     }
   }
