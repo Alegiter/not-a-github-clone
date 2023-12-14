@@ -1,7 +1,6 @@
 import { FC, memo } from "react"
 import { createHashRouter, redirect, RouterProvider } from "react-router-dom"
 import { LoginPageUi } from "~/pages/login"
-import { SearchPageUi } from "~/pages/search"
 import { loadGithubUserAccessToken } from "~/shared/api"
 import { ROUTES } from "~/shared/config"
 import { store } from "~/shared/model"
@@ -41,7 +40,12 @@ const router = createHashRouter([
     },
     {
         path: ROUTES.SEARCH,
-        element: <SearchPageUi />,
+        lazy: () => import("~/pages/search").then(module => {
+            console.log("Router | lazy | search page")
+            return {
+                element: <module.SearchPageUi />
+            }
+        }),
         loader: authGuard
     },
     {

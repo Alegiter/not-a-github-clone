@@ -8,7 +8,16 @@ const config: CodegenConfig = {
   generates: {
     "packages/front/src/shared/api/github/__graphql__/": {
       preset: "client",
-      plugins: []
+      plugins: [],
+      config: {
+        enumsAsTypes: true,
+        avoidOptionals: true
+      }
+    },
+    [`${folder}/introspection.json`]: {
+      plugins: [
+        "introspection"
+      ]
     }
   }
 };

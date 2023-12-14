@@ -55,7 +55,9 @@ const searchReposDocument = graphql(`
         search(type: REPOSITORY, query: $query, first: $first, last: $last after: $after, before: $before) {
             nodes {
                 ... on Repository {
-                    id
+                    __typename,
+                    id,
+                    nameWithOwner
                 }
             },
             repositoryCount,
@@ -74,6 +76,10 @@ export async function getRepositories(query: string, limit: number, cursor?: str
         document: searchReposDocument,
         variables: {
             query,
+            first: null,
+            last: null,
+            after: null,
+            before: null,
             ...(order === "asc" && { first: limit, after: cursor }),
             ...(order === "desc" && { last: limit, before: cursor })
         }
