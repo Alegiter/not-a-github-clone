@@ -2,6 +2,8 @@ import { FC, RefObject, memo, useCallback, useEffect } from "react"
 import useInfiniteScroll from "react-infinite-scroll-hook"
 import { ViewportList } from "react-viewport-list"
 import { repositoryListStore, loadNextRepositoryList } from "../model"
+import { ROUTES } from "~/shared/config"
+import { Link } from "react-router-dom"
 
 type Props = {
     containerRef: RefObject<HTMLElement | null>
@@ -42,7 +44,11 @@ export const RepositoryList: FC<Props> = memo(function RepoList(props) {
                 if (item) {
                     return (
                         <div key={item.id} className="item">
-                            {item.nameWithOwner}
+                            <Link
+                                to={`${ROUTES.REPOSITORY.replace(":repositoryId", item.id)}`}
+                            >
+                                {item.nameWithOwner}
+                            </Link>
                         </div>
                     )
                 }
