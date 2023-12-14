@@ -51,12 +51,11 @@ export async function getWhoAmI(): Promise<string> {
 }
 
 const searchReposDocument = graphql(`
-    query searchRepos($query:String!, $first:Int!, $after:String, $before:String) {
-        search(type: REPOSITORY, query: $query, first: $first, after: $after, before: $before) {
+    query searchRepos($query:String!, $first:Int, $last:Int $after:String, $before:String) {
+        search(type: REPOSITORY, query: $query, first: $first, last: $last after: $after, before: $before) {
             nodes {
                 ... on Repository {
-                    id,
-                    name
+                    id
                 }
             },
             repositoryCount,
@@ -70,14 +69,13 @@ const searchReposDocument = graphql(`
     }
 `)
 
-export async function getRepositories(query: string, limit: number, cursor?: string, order?: "asc" | "desc") {
+export async function getRepositories(query: string, limit: number, cursor?: string, order: "asc" | "desc" = "asc") {
     return fetchGraphql({
         document: searchReposDocument,
         variables: {
             query,
-            first: limit,
-            ...(order === "asc" && { after: cursor }),
-            ...(order === "desc" && { before: cursor })
+            ...(order === "asc" && { first: limit, after: cursor }),
+            ...(order === "desc" && { last: limit, before: cursor })
         }
     })
 }
