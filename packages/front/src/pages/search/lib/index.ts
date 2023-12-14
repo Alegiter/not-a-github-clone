@@ -1,0 +1,1 @@
+export { loader as searchPageLoader } from "./route"

@@ -9,6 +9,7 @@ type Store = {
     hasNextPage: boolean
     endCursor: string | null
     limit: number
+    q: string
 }
 
 export const store = observable<Store>({
@@ -17,24 +18,39 @@ export const store = observable<Store>({
     loading: false,
     hasNextPage: false,
     endCursor: null,
-    limit: 100
+    limit: 100,
+    q: ""
 })
 
+export function reset() {
+    runInAction(() => {
+        store.items = []
+        store.total = 0
+        store.loading = false
+        store.hasNextPage = false
+        store.endCursor = null
+        store.limit = 100
+        store.q = ""
+    })
+}
+
 export async function loadInitial(query: string) {
+    reset()
     await load(query, 10)
 }
 
-export async function loadNext(query: string) {
+export async function loadNext() {
     if (!store.endCursor) {
         throw new Error("Can't load next | endCursor required");
     }
 
-    await load(query, store.limit, store.endCursor)
+    await load(store.q, store.limit, store.endCursor)
 }
 
 async function load(query: string, limit: number, cursor?: string, order: "asc" | "desc" = "asc") {
     runInAction(() => {
         store.loading = true
+        store.q = query
     })
     const result = await getGithubRepositories(query, limit, cursor, order)
     runInAction(() => {

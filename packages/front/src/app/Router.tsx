@@ -1,8 +1,22 @@
 import { FC, memo } from "react"
-import { createHashRouter, redirect, RouterProvider } from "react-router-dom"
+import { createHashRouter, redirect, RouterProvider, LoaderFunction } from "react-router-dom"
 import { LoginPageUi, loginPageLoader } from "~/pages/login"
+import { searchPageLoader } from "~/pages/search"
 import { ROUTES } from "~/shared/config"
 import { store } from "~/shared/model"
+
+function loaderFlow(...fns: Array<LoaderFunction>): LoaderFunction {
+    return async (args) => {
+        for (const loader of fns) {
+            const response = await loader(args)
+            if (response === null) {
+                continue
+            }
+            return response
+        }
+        return null
+    }
+}
 
 function authGuard() {
     if (store.isLoggedIn) {
@@ -26,7 +40,10 @@ const router = createHashRouter([
                 element: <module.SearchPageUi />
             }
         }),
-        loader: authGuard
+        loader: loaderFlow(
+            authGuard,
+            searchPageLoader
+        )
     },
     {
         path: "*",

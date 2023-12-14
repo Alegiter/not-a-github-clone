@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => {
       "\n" 
     );
     github.accessToken = env.ACCESS_TOKEN
-    env.VITE_IS_LOGGED_IN = "true"
+    process.env.VITE_IS_LOGGED_IN = "true"
   }
 
   return {

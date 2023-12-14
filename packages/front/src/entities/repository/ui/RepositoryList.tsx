@@ -1,22 +1,26 @@
-import { FC, RefObject, memo, useEffect } from "react"
+import { FC, RefObject, memo, useCallback, useEffect } from "react"
 import useInfiniteScroll from "react-infinite-scroll-hook"
 import { ViewportList } from "react-viewport-list"
-import type { Repository } from "../model"
+import { repositoryListStore, loadNextRepositoryList } from "../model"
 
 type Props = {
     containerRef: RefObject<HTMLElement | null>
-    items: Array<Repository>
-    total: number
-    fetchMore: () => void
-    isFetching: boolean
-    hasNextPage: boolean
 }
 
 export const RepositoryList: FC<Props> = memo(function RepoList(props) {
-    const { containerRef, items, total, fetchMore, isFetching, hasNextPage } = props
+    const { containerRef } = props
+
+    const loading = repositoryListStore.loading
+    const items = repositoryListStore.items
+    const total = repositoryListStore.total
+    const hasNextPage = repositoryListStore.hasNextPage
+
+    const fetchMore = useCallback(() => {
+        loadNextRepositoryList()
+    }, [])
 
     const [sentryRef, { rootRef }] = useInfiniteScroll({
-        loading: isFetching,
+        loading,
         hasNextPage,
         onLoadMore: fetchMore,
         rootMargin: "0px 0px 300px 0px",
@@ -42,7 +46,7 @@ export const RepositoryList: FC<Props> = memo(function RepoList(props) {
                         </div>
                     )
                 }
-                if (isFetching || hasNextPage) {
+                if (loading || hasNextPage) {
                     return (
                         <div key={ind} ref={sentryRef}>
                             Loading...
