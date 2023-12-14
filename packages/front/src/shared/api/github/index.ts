@@ -1,5 +1,5 @@
 export {
     redirectToAppAuthorizationUrl as redirectToGithubAppAuthorizationUrl,
-    loadUserAccessToken as loadGithubUserAccessToken
+    loadUserAccessToken as loadGithubUserAccessToken,
+    getWhoAmI as getGithubWhoAmI
 } from "./api"
-export * from "./__graphql__"

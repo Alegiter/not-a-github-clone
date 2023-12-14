@@ -26,6 +26,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), tsconfigPaths()],
+    base: env.BASE_URL,
     server: {
       proxy: {
         "/login/oauth/authorize": {

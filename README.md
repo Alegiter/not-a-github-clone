@@ -10,6 +10,7 @@ Run once:
 ```
 npm i
 ```
+> **_NOTE:_** after instalation github graphql types will be generated using codegen
 
 Run:
 ```
