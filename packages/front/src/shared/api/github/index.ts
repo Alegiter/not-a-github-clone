@@ -1,6 +1,6 @@
 export {
     redirectToAppAuthorizationUrl as redirectToGithubAppAuthorizationUrl,
-    loadUserAccessToken as loadGithubUserAccessToken,
+    login as loginWithGithub,
     getWhoAmI as getGithubWhoAmI,
     getRepositories as getGithubRepositories
 } from "./api"

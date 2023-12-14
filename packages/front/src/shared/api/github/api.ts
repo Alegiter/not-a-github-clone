@@ -6,18 +6,16 @@ const baseUrl = import.meta.env.BASE_URL
 
 export const redirectToAppAuthorizationUrl = `/login/oauth/authorize`
 
-export async function loadUserAccessToken(code: string): Promise<void> {
+export async function login(code: string): Promise<void> {
     const url = `${baseUrl}login/oauth/access_token?code=${code}`
     const res = await fetch(url, {
         method: "POST"
     })
-    const result = await res.text()
-    const accessToken = new URLSearchParams(result).get("access_token")
-    if (!accessToken) {
+    const isLoggedIn = res.status === 200
+    if (!isLoggedIn) {
         throw new Error("No access token loaded")
     }
-    console.log("loadUserAccessToken | consider logged in");
-    store.githubAccessToken = accessToken
+    console.log("login | consider logged in");
     store.isLoggedIn = true
 }
 
@@ -29,9 +27,6 @@ async function fetchGraphql<T = unknown, V extends Variables = Variables>(
         url: `${baseUrl}graphql`,
         document: options.document,
         variables: options.variables,
-        requestHeaders: {
-            Authorization: `Bearer ${store.githubAccessToken}`
-        },
     })
 }
 

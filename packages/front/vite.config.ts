@@ -10,19 +10,35 @@ const github = {
   target: "https://github.com",
   api: {
     target: "https://api.github.com"
-  }
+  },
+  accessToken: ""
 }
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, root, '')
   Object.assign(process.env, env)
 
-  if (!env.CLIENT_ID || !env.CLIENT_SECRET) {
-    throw new Error("Env variables 'CLIENT_ID' and 'CLIENT_SECRET' for Guthib App are not provided")
+  const isAppAuth = !!env.CLIENT_ID && !!env.CLIENT_SECRET && !!env.CLIENT_REDIRECT_URI
+  const isTokenAuth = !!env.ACCESS_TOKEN
+
+  if (!isAppAuth && !isTokenAuth) {
+    throw new Error("Provide env variables either for Github App auth or personal access token")
+  }
+  
+  if (!isTokenAuth && (!env.CLIENT_ID || !env.CLIENT_SECRET || !env.CLIENT_REDIRECT_URI)) {
+    throw new Error("Env variables 'CLIENT_ID', 'CLIENT_SECRET' and/or 'CLIENT_REDIRECT_URI' for Guthib App auth are not provided")
   }
 
-  if (!env.CLIENT_REDIRECT_URI) {
-    throw new Error("Env variable CLIENT_REDIRECT_URI for Github App is not provided")
+  if (isTokenAuth) {
+    console.log(
+      "\n",
+      "Personal access token is provided.",
+      "\n",
+      "App will use it instead of log in Github App",
+      "\n" 
+    );
+    github.accessToken = env.ACCESS_TOKEN
+    env.VITE_IS_LOGGED_IN = "true"
   }
 
   return {
@@ -53,10 +69,37 @@ export default defineConfig(({ mode }) => {
 
             return `${path}&client_id=${env.CLIENT_ID}&client_secret=${env.CLIENT_SECRET}`
           },
+          selfHandleResponse: true,
+          configure(proxy) {
+            proxy.on("proxyRes", (proxyRes, req, res) => {
+              console.log("proxy | configure | store access token")
+              const bodyChunks = []
+              proxyRes.on('data', function (chunk) {
+                bodyChunks.push(chunk)
+              })
+              proxyRes.on('end', function () {
+                const body = Buffer.concat(bodyChunks).toString()
+                const accessToken = new URLSearchParams(body).get("access_token")
+                if (!accessToken) {
+                  res.writeHead(500, "Did not accept access token")
+                } else {
+                  github.accessToken = accessToken
+                }
+                res.end()
+              })
+            })
+          }
         },
         "/graphql": {
           target: github.api.target,
-          changeOrigin: true
+          changeOrigin: true,
+          configure(proxy) {
+            console.log("proxy | configure | add authorization token")
+
+            proxy.on("proxyReq", (proxyReq) => {
+              proxyReq.setHeader("Authorization", `Bearer ${github.accessToken}`)
+            })
+          },
         }
       }
     }

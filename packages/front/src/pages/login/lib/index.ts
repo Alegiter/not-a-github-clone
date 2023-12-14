@@ -1,0 +1,1 @@
+export { loader as loginPageLoader } from "./route"

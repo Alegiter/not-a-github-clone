@@ -1,7 +1,6 @@
 import { FC, memo } from "react"
 import { createHashRouter, redirect, RouterProvider } from "react-router-dom"
-import { LoginPageUi } from "~/pages/login"
-import { loadGithubUserAccessToken } from "~/shared/api"
+import { LoginPageUi, loginPageLoader } from "~/pages/login"
 import { ROUTES } from "~/shared/config"
 import { store } from "~/shared/model"
 
@@ -17,26 +16,7 @@ const router = createHashRouter([
     {
         path: ROUTES.LOGIN,
         element: <LoginPageUi />,
-        loader: async () => {
-            if (store.isLoggedIn) {
-                // ideally block navigation to login
-                // or redirect to page from which was navigated
-                return redirect(ROUTES.SEARCH)
-            }
-
-            const code = new URLSearchParams(window.location.search).get("code")
-            if (code) {
-                try {
-                    await loadGithubUserAccessToken(code)
-                } catch (e) {
-                    // TODO: handle error
-                    return null
-                }
-                return redirect(ROUTES.SEARCH)
-            }
-
-            return null
-        }
+        loader: loginPageLoader
     },
     {
         path: ROUTES.SEARCH,

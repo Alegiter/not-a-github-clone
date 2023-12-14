@@ -1,12 +1,9 @@
-// TODO: add some fancy store to use "computed" for example
+import { observable } from "mobx"
 
 type Store = {
-    githubAccessToken: string | undefined
     isLoggedIn: boolean
 }
 
-export const store: Store = {
-    githubAccessToken: undefined,
-    // could be "computed" from githubAccessToken
-    isLoggedIn: false
-}
+export const store = observable<Store>({
+    isLoggedIn: import.meta.env.VITE_IS_LOGGED_IN
+})
