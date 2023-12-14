@@ -1,0 +1,1 @@
+export { RepositoryPage as RepositoryPageUi } from "./Repository"
