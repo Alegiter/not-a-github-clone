@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { getGithubWhoAmI } from "../api"
+import { getGithubRepositories, getGithubWhoAmI } from "../api"
 import { testInsideViteServer } from "./fixture"
 
 describe("Github graphql integration", () => {
@@ -11,6 +11,11 @@ describe("Github graphql integration", () => {
 
             const resultLogin = await getGithubWhoAmI()
             expect(resultLogin).toBe(login)
+        })
+
+        it("should get this repo", async () => {
+            const result = await getGithubRepositories("alegiter/not-a-github-clone", 1)
+            expect(result.search.repositoryCount).toBe(1)
         })
     })
 })

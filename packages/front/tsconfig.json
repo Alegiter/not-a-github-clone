@@ -24,14 +24,14 @@
     "baseUrl": "./src",
     "paths": {
       "~/*": ["./*"],
-      "@github-graphql-documents": ["../../../.generated/github/graphql/index"]
+      "@github-graphql-documents": ["../.generated/github/graphql/index"]
     },
 
     /* Plugins */
     "plugins": [
       {
         "name": "@0no-co/graphqlsp",
-        "schema": "../../.generated/github/introspection.json",
+        "schema": ".generated/github/introspection.json",
         "disableTypegen": true,
         "templateIsCallExpression": true,
         "template": "graphql"
