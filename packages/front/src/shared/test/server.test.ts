@@ -22,7 +22,7 @@ describe("Server", () => {
         }
     })
 
-    it("should throw error if not all github app env vars are not provided", () => {
+    it("should throw error if not all github app env vars are provided", () => {
         vi.stubEnv("CLIENT_ID", "some_id")
         vi.stubEnv("ACCESS_TOKEN", "")
         try {

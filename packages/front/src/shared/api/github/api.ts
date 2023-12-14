@@ -80,3 +80,36 @@ export async function getRepositories(query: string, limit: number, cursor?: str
         }
     })
 }
+
+const getRepoTreeDocument = graphql(`
+    query repoTreeFiles($owner: String!, $name: String!, $expression: String!) {
+        repository(owner: $owner, name: $name) {
+            object(expression: $expression) {
+                ... on Tree {
+                    __typename
+                    entries {
+                        name
+                        type
+                        object {
+                            ... on Blob {
+                                byteSize
+                                isBinary
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+`)
+
+export async function getRepositoryTree(owner: string, name: string, branch: string = "HEAD", path: string = "") {
+    return fetchGraphql({
+        document: getRepoTreeDocument,
+        variables: {
+            owner,
+            name,
+            expression: `${branch}:${path}`
+        }
+    })
+}
