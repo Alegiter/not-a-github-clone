@@ -45,7 +45,7 @@ export const RepositoryList: FC<Props> = memo(function RepoList(props) {
                     return (
                         <div key={item.id} className="item">
                             <Link
-                                to={`${ROUTES.REPOSITORY.replace(":repositoryId", item.id)}`}
+                                to={`${ROUTES.REPOSITORY.replace(":owner/:name", item.nameWithOwner)}`}
                             >
                                 {item.nameWithOwner}
                             </Link>

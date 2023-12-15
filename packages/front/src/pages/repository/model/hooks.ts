@@ -1,13 +1,12 @@
 import { useLoaderData } from "react-router-dom"
 
 type PageData = {
-    id: string
+    owner: string
+    name: string
 }
 
 export function usePageLoaderData(): PageData {
-    const id = useLoaderData()
+    const data = useLoaderData() as PageData
     
-    return {
-        id: String(id)
-    }
+    return data
 }
