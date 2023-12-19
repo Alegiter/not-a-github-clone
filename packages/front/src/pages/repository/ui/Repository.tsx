@@ -1,9 +1,8 @@
 import { FC, memo } from "react"
-import { usePageLoaderData } from "../model"
+import { RepositoryFilesTreeUi } from "~/entities/repository"
 
 export const RepositoryPage: FC = memo(function RepositoryPage() {
-    const { owner, name } = usePageLoaderData()
     return (<>
-        {owner}/{name}
+        <RepositoryFilesTreeUi/>
     </>)
 })

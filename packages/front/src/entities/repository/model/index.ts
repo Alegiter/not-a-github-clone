@@ -5,3 +5,8 @@ export {
     loadNext as loadNextRepositoryList,
     reset as resetRepositoryList
 } from "./repositoryList"
+export { 
+    store as repositoryFilesTreeStore,
+    type TreeNode as RepositoryFilesTreeNode,
+    loadInitialTree as loadInitialRepositoryFilesTree
+ } from "./repositoryFilesTree"

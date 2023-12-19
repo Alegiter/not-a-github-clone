@@ -88,6 +88,7 @@ const getRepoTreeDocument = graphql(`
                 ... on Tree {
                     __typename
                     entries {
+                        oid
                         name
                         type
                         object {
