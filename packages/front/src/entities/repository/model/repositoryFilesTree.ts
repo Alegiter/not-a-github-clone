@@ -1,21 +1,29 @@
 import { observable, runInAction } from "mobx"
 import { getGithubRepositoryTree } from "~/shared/api"
+import { arrayToTree } from "../lib"
 
-type BaseNode = {
+type FlatNode = {
     id: string
+    parentId: string | null
     label: string
-    children?: Array<BaseNode>
     isLeaf: boolean
+    path: string
 }
 
-type RootNode = { root: true, children: Array<BaseNode> }
+type NestedNode = FlatNode & {
+    children: Array<NestedNode>
+}
 
-export type TreeNode = RootNode | BaseNode
+type RootNode = { root: true, children: Array<NestedNode> }
+
+export type TreeNode = RootNode | NestedNode
 
 type Store = {
     nodes: RootNode
+    flatNodes: Array<FlatNode>
     owner: string
     name: string
+    branch: string | undefined
 }
 
 export const store = observable<Store>({
@@ -23,8 +31,10 @@ export const store = observable<Store>({
         root: true,
         children: []
     },
+    flatNodes: [],
     owner: "",
-    name: ""
+    name: "",
+    branch: undefined
 })
 
 export function reset() {
@@ -35,6 +45,13 @@ export function reset() {
         }
         store.owner = ""
         store.name = ""
+        store.branch = undefined
+    })
+}
+
+function rebuildTree() {
+    runInAction(() => {
+        store.nodes.children = arrayToTree(store.flatNodes) as Array<NestedNode>
     })
 }
 
@@ -50,12 +67,34 @@ export async function loadInitialTree(owner: string, name: string) {
         if (tree?.__typename !== "Tree" || !tree.entries) {
             return
         }
-        store.nodes.children = tree.entries.map<BaseNode>((entry) => {
+        store.flatNodes = tree.entries.map<FlatNode>((entry) => ({
+            id: entry.oid,
+            parentId: null,
+            label: entry.name,
+            isLeaf: entry.type !== "tree",
+            path: entry.name
+        }))
+        rebuildTree()
+    })
+}
+
+export async function loadSubTree(parentNodeId: string, path: string) {
+    const result = await getGithubRepositoryTree(store.owner, store.name, store.branch, path)
+    runInAction(() => {
+        const tree = result.repository?.object
+        if (tree?.__typename !== "Tree" || !tree.entries) {
+            return
+        }
+        const nodes = tree.entries.map<FlatNode>((entry) => {
             return {
                 id: entry.oid,
+                parentId: parentNodeId,
                 label: entry.name,
-                isLeaf: entry.type !== "tree"
+                isLeaf: entry.type !== "tree",
+                path: `${path}/${entry.name}`
             }
         })
+        store.flatNodes.push(...nodes)
+        rebuildTree()
     })
 }

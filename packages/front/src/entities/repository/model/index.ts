@@ -8,5 +8,6 @@ export {
 export { 
     store as repositoryFilesTreeStore,
     type TreeNode as RepositoryFilesTreeNode,
-    loadInitialTree as loadInitialRepositoryFilesTree
+    loadInitialTree as loadInitialRepositoryFilesTree,
+    loadSubTree as loadSubRepositoryFilesTree,
  } from "./repositoryFilesTree"
