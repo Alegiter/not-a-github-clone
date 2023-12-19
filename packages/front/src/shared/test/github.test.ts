@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { getGithubRepositories, getGithubRepositoryTree, getGithubWhoAmI } from "../api"
+import { getGithubRepositories, getGithubRepositoryFileInfo, getGithubRepositoryFileText, getGithubRepositoryTree, getGithubWhoAmI } from "../api"
 
 describe("Github graphql integration", () => {
     it("should get login", async () => {
@@ -63,5 +63,24 @@ describe("Github graphql integration", () => {
         expect(tree.entries.length).toBeGreaterThanOrEqual(1)
         const folder = tree.entries.find((entry) => entry.name === "front")
         expect(folder?.name).toBe("front")
+    })
+
+    it("should load repository file info", async () => {
+        const { repository } = await getGithubRepositoryFileInfo("Alegiter", "not-a-github-clone", "main", "package.json")
+        const file = repository?.object
+        if (file?.__typename !== "Blob") {
+            throw new Error("Expected Blob type")
+        }
+        expect(file.isBinary).toBeFalsy()
+        expect(file.byteSize).toBeDefined()
+    })
+
+    it("should load repository file text", async () => {
+        const { repository } = await getGithubRepositoryFileText("Alegiter", "not-a-github-clone", "main", "package.json")
+        const file = repository?.object
+        if (file?.__typename !== "Blob") {
+            throw new Error("Expected Blob type")
+        }
+        expect(file.text).toContain('"name": "not-a-github-clone"')
     })
 })
