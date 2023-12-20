@@ -1,8 +1,6 @@
 import { FC, memo } from "react"
 import { createHashRouter, redirect, RouterProvider, LoaderFunction } from "react-router-dom"
 import { LoginPageUi, loginPageLoader } from "~/pages/login"
-import { repositoryPageLoader } from "~/pages/repository"
-import { searchPageLoader } from "~/pages/search"
 import { ROUTES } from "~/shared/config"
 import { store } from "~/shared/model"
 
@@ -38,26 +36,44 @@ const router = createHashRouter([
         lazy: () => import("~/pages/search").then(module => {
             console.log("Router | lazy | search page")
             return {
-                element: <module.SearchPageUi />
+                element: <module.SearchPageUi />,
+                loader: loaderFlow(
+                    authGuard,
+                    module.searchPageLoader
+                )
             }
         }),
-        loader: loaderFlow(
-            authGuard,
-            searchPageLoader
-        )
     },
     {
         path: ROUTES.REPOSITORY,
-        lazy: () => import("~/pages/repository").then(module => {
-            console.log("Router | lazy | repository page")
-            return {
-                element: <module.RepositoryPageUi />
+        children: [
+            {
+                index: true,
+                lazy: () => import("~/pages/repository").then(module => {
+                    console.log("Router | lazy | repository page")
+                    return {
+                        element: <module.RepositoryPageUi />,
+                        loader: loaderFlow(
+                            authGuard,
+                            module.repositoryPageLoader
+                        ),
+                    }
+                }),
+            },
+            {
+                path: ROUTES.REPOSITORY_FILE,
+                lazy: () => import("~/pages/repository").then(module => {
+                    console.log("Router | lazy | repository page | file")
+                    return {
+                        element: <module.RepositoryPageUi file />,
+                        loader: loaderFlow(
+                            authGuard,
+                            module.repositoryPageLoader
+                        ),
+                    }
+                }),
             }
-        }),
-        loader: loaderFlow(
-            authGuard,
-            repositoryPageLoader
-        )
+        ]
     },
     {
         path: "*",

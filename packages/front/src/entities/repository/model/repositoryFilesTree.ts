@@ -21,7 +21,7 @@ export type TreeNode = RootNode | NestedNode
 type Store = {
     nodes: RootNode
     flatNodes: Array<FlatNode>
-    owner: string
+        owner: string
     name: string
     branch: string | undefined
 }
@@ -32,7 +32,7 @@ export const store = observable<Store>({
         children: []
     },
     flatNodes: [],
-    owner: "",
+        owner: "",
     name: "",
     branch: undefined
 })
@@ -43,6 +43,7 @@ export function reset() {
             root: true,
             children: []
         }
+        store.flatNodes = []
         store.owner = ""
         store.name = ""
         store.branch = undefined
@@ -68,7 +69,7 @@ export async function loadInitialTree(owner: string, name: string) {
             return
         }
         store.flatNodes = tree.entries.map<FlatNode>((entry) => ({
-            id: entry.oid,
+            id: `${entry.oid}-${entry.name}`,
             parentId: null,
             label: entry.name,
             isLeaf: entry.type !== "tree",
@@ -87,7 +88,7 @@ export async function loadSubTree(parentNodeId: string, path: string) {
         }
         const nodes = tree.entries.map<FlatNode>((entry) => {
             return {
-                id: entry.oid,
+                id: `${entry.oid}-${entry.name}`,
                 parentId: parentNodeId,
                 label: entry.name,
                 isLeaf: entry.type !== "tree",

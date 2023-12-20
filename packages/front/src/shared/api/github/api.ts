@@ -53,6 +53,10 @@ const searchReposDocument = graphql(`
                     __typename,
                     id,
                     nameWithOwner
+                    name,
+                    owner {
+                        login
+                    }
                 }
             },
             repositoryCount,
@@ -91,12 +95,6 @@ const getRepoTreeDocument = graphql(`
                         oid
                         name
                         type
-                        object {
-                            ... on Blob {
-                                byteSize
-                                isBinary
-                            }
-                        }
                     }
                 }
             }

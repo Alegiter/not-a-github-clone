@@ -3,7 +3,8 @@ import { CircularProgress, Typography } from "@mui/material"
 import { TreeItem, TreeItemContentProps, TreeItemProps, TreeView, useTreeItem } from "@mui/x-tree-view"
 import clsx from "clsx"
 import { observer } from "mobx-react-lite"
-import { FC, ReactNode, Ref, forwardRef, useState } from "react"
+import { FC, MouseEventHandler, ReactNode, Ref, forwardRef, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { RepositoryFilesTreeNode, loadSubRepositoryFilesTree, repositoryFilesTreeStore } from "../model"
 
 export const RepositoryFilesTree: FC = observer(function RepositoryFilesTree() {
@@ -87,6 +88,8 @@ const RepositoryTreeItemContent = forwardRef(function RepositoryTreeItemContent(
         handleExpansion
     } = useTreeItem(nodeId)
 
+    const navigate = useNavigate()
+
     const handleExpansionClick: typeof handleExpansion = (event) => {
         if (isChildrenLoaded) {
             return handleExpansion(event)
@@ -98,6 +101,14 @@ const RepositoryTreeItemContent = forwardRef(function RepositoryTreeItemContent(
         loadSubRepositoryFilesTree(nodeId, path)
     }
 
+    const handleClick: MouseEventHandler<HTMLDivElement> = (event) => {
+        if (isLeaf) {
+            navigate(`${path}`)
+            return
+        }
+        handleExpansionClick(event)
+    }
+
     return (
         <div
             className={clsx(className, classes.root, {
@@ -106,7 +117,7 @@ const RepositoryTreeItemContent = forwardRef(function RepositoryTreeItemContent(
                 [classes.focused]: focused,
                 [classes.disabled]: disabled,
             })}
-            onMouseDown={handleExpansionClick}
+            onMouseDown={handleClick}
             ref={ref as React.Ref<HTMLDivElement>}
         >
             <div className={classes.iconContainer}>

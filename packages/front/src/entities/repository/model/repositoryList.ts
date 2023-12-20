@@ -64,7 +64,11 @@ async function load(query: string, limit: number, cursor?: string, order: "asc" 
 
         const newItems = result.search.nodes.reduce<Array<Repository>>((acc, item) => {
             if (item?.__typename === "Repository") {
-                acc.push(item)
+                const {owner, ...restItem} = item
+                acc.push({
+                    ...restItem,
+                    owner: owner.login
+                })
             }
             return acc
         }, [])

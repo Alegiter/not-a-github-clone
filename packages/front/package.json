@@ -25,12 +25,14 @@
     "react-dom": "^18.2.0",
     "react-infinite-scroll-hook": "^4.1.1",
     "react-router-dom": "^6.20.1",
+    "react-syntax-highlighter": "^15.5.0",
     "react-viewport-list": "^7.1.1"
   },
   "devDependencies": {
     "@0no-co/graphqlsp": "^0.11.2",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
+    "@types/react-syntax-highlighter": "^15.5.11",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "@vitejs/plugin-react": "^4.2.0",
