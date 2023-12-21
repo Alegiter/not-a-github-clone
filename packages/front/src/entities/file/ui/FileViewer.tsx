@@ -24,7 +24,12 @@ export const FileViewer = observer(function FileViewer() {
     }
 
     return (
-        <SyntaxHighlighter showLineNumbers>
+        <SyntaxHighlighter
+            showLineNumbers
+            wrapLines
+            wrapLongLines
+            customStyle={{ margin: 0 }}
+        >
             {text}
         </SyntaxHighlighter>
     )

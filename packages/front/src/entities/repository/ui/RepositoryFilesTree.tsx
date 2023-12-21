@@ -122,11 +122,13 @@ const RepositoryTreeItemContent = forwardRef(function RepositoryTreeItemContent(
         >
             <div className={classes.iconContainer}>
                 {expansionIcon}
+            </div>
+            <div className={classes.iconContainer}>
                 {!isLeaf && !expanded && (
-                    <Folder/>
+                    <Folder />
                 )}
                 {!isLeaf && expanded && (
-                    <FolderOpen/>
+                    <FolderOpen />
                 )}
             </div>
             <Typography

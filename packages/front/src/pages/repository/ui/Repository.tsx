@@ -1,3 +1,4 @@
+import { Box } from "@mui/material"
 import { FC, memo } from "react"
 import { FileViewerUi } from "~/entities/file"
 import { RepositoryFilesTreeUi } from "~/entities/repository"
@@ -15,7 +16,11 @@ export const RepositoryPage: FC<Props> = memo(function RepositoryPage(props) {
             <RepositoryFilesTreeUi />
         </Sidebar>
         <Main>
-            {file && <FileViewerUi />}
+            {file && (
+                <Box sx={{ flex: 1, overflow: "auto" }}>
+                    <FileViewerUi />
+                </Box>
+            )}
         </Main>
     </>)
 })
