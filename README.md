@@ -1,4 +1,4 @@
-# This App
+# Not a github clone
 
 is serving next purposes:
 - educational
@@ -6,17 +6,19 @@ is serving next purposes:
 
 ## Dev
 
-Run once:
+1. Install dependencies: 
 ```
 npm i
 ```
-> **_NOTE:_** after instalation github graphql types will be generated using codegen
-
-Run:
+2. Create `.env` file - see `.env.example`
+2. Run development build: 
 ```
 npm -w @not-a-github-clone/front run dev
 ```
-or go to directory `packages/front` and run:
+
+## Test
+
+Run:
 ```
-npm run dev
+npm -w @not-a-github-clone/front run test
 ```
