@@ -7,7 +7,7 @@ export const loader: LoaderFunction = async function loginPageLoader() {
     if (store.isLoggedIn) {
         // ideally block navigation to login
         // or redirect to page from which was navigated
-        return redirect(ROUTES.SEARCH)
+        return redirect(ROUTES.ROOT)
     }
 
     const code = new URLSearchParams(window.location.search).get("code")
@@ -21,5 +21,5 @@ export const loader: LoaderFunction = async function loginPageLoader() {
         // TODO: handle error
         return null
     }
-    return redirect(ROUTES.SEARCH)
+    return redirect(ROUTES.ROOT)
 }

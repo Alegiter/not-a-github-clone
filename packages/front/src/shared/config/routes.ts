@@ -1,13 +1,13 @@
 export enum ROUTES {
-    LOGIN = "/",
-    SEARCH = "/search",
+    ROOT = "/",
+    LOGIN = "/login",
     REPOSITORY = "/repository/:owner/:name",
     REPOSITORY_FILE = "*"
 }
 
 type RouteParams = {
+    [ROUTES.ROOT]: [],
     [ROUTES.LOGIN]: [],
-    [ROUTES.SEARCH]: [],
     [ROUTES.REPOSITORY]: [owner: string, name: string, path?: string],
     [ROUTES.REPOSITORY_FILE]: [],
 }
