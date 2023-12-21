@@ -1,3 +1,4 @@
+import { TextField } from "@mui/material"
 import { FC, memo, useEffect, useState } from "react"
 import { Form, useSearchParams } from "react-router-dom"
 
@@ -12,7 +13,8 @@ export const SearchInput: FC = memo(function SearchInput() {
 
     return (
         <Form>
-            <input
+            <TextField
+                placeholder="Search repository"
                 name="q"
                 type="search"
                 value={query}
