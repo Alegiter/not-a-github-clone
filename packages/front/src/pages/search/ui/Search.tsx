@@ -1,3 +1,4 @@
+import { Box } from "@mui/material"
 import { observer } from "mobx-react-lite"
 import { FC, useRef } from "react"
 import { useNavigation } from "react-router-dom"
@@ -14,12 +15,12 @@ export const SearchPage: FC = observer(function SearchPage() {
         <Main>
             {isLoading && (<>Loading...</>)}
             {!isLoading && (
-                <div
+                <Box
                     ref={containerRef}
-                    style={{ maxHeight: "300px", overflow: "auto" }}
+                    sx={{ height: "100%", overflow: "auto" }}
                 >
                     <RepositoryListUi containerRef={containerRef} />
-                </div>
+                </Box>
             )}
         </Main>
     </>)

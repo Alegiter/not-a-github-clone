@@ -1,15 +1,17 @@
 import { FC, RefObject, memo, useCallback, useEffect } from "react"
 import useInfiniteScroll from "react-infinite-scroll-hook"
 import { ViewportList } from "react-viewport-list"
-import { repositoryListStore, loadNextRepositoryList } from "../model"
+import { repositoryListStore, loadNextRepositoryList, Repository } from "../model"
 import { ROUTES, linkBuild } from "~/shared/config"
-import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import { observer } from "mobx-react-lite"
+import { ListItem, ListItemButton, ListItemText, Skeleton } from "@mui/material"
 
 type Props = {
     containerRef: RefObject<HTMLElement | null>
 }
 
-export const RepositoryList: FC<Props> = memo(function RepoList(props) {
+export const RepositoryList: FC<Props> = observer(function RepoList(props) {
     const { containerRef } = props
 
     const loading = repositoryListStore.loading
@@ -42,26 +44,44 @@ export const RepositoryList: FC<Props> = memo(function RepoList(props) {
                 const ind = index as number
                 const item = items[ind]
                 if (item) {
-                    const link = linkBuild(ROUTES.REPOSITORY, item.owner, item.name)
                     return (
-                        <div key={item.id} className="item">
-                            <Link
-                                to={link}
-                            >
-                                {item.nameWithOwner}
-                            </Link>
-                        </div>
+                        <RepositoryListItem
+                            key={item.id}
+                            item={item}
+                        />
                     )
                 }
                 if (loading || hasNextPage) {
+                    const isSentry = ind - items.length === 1
                     return (
-                        <div key={ind} ref={sentryRef}>
-                            Loading...
-                        </div>
+                        <ListItem key={ind} ref={isSentry ? sentryRef : null}>
+                            <Skeleton component="div" variant="rectangular" width="100%" />
+                        </ListItem>
                     )
                 }
 
             }}
         </ViewportList>
+    )
+})
+
+type RepositoryListItemProps = {
+    item: Repository
+}
+const RepositoryListItem: FC<RepositoryListItemProps> = memo(function RepositoryListItem(props) {
+    const { item } = props
+    const link = linkBuild(ROUTES.REPOSITORY, item.owner, item.name)
+    const navigate = useNavigate()
+
+    const onClick = useCallback(() => {
+        navigate(link)
+    }, [navigate, link])
+
+    return (
+        <ListItem disablePadding>
+            <ListItemButton onClick={onClick}>
+                <ListItemText primary={item.nameWithOwner} />
+            </ListItemButton>
+        </ListItem>
     )
 })

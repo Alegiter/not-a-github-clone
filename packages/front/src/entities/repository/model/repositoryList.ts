@@ -18,7 +18,7 @@ export const store = observable<Store>({
     loading: false,
     hasNextPage: false,
     endCursor: null,
-    limit: 100,
+    limit: 50,
     q: ""
 })
 
@@ -29,7 +29,7 @@ export function reset() {
         store.loading = false
         store.hasNextPage = false
         store.endCursor = null
-        store.limit = 100
+        store.limit = 50
         store.q = ""
     })
 }
