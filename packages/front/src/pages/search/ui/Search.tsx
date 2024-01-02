@@ -17,7 +17,7 @@ export const SearchPage: FC = observer(function SearchPage() {
             {!isLoading && (
                 <Box
                     ref={containerRef}
-                    sx={{ height: "100%", overflow: "auto" }}
+                    sx={{ flex: 1, overflow: "auto" }}
                 >
                     <RepositoryListUi containerRef={containerRef} />
                 </Box>
