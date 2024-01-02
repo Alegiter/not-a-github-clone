@@ -16,7 +16,6 @@ export const RepositoryList: FC<Props> = observer(function RepoList(props) {
 
     const loading = repositoryListStore.loading
     const items = repositoryListStore.items
-    const total = repositoryListStore.total
     const hasNextPage = repositoryListStore.hasNextPage
 
     const fetchMore = useCallback(() => {
@@ -37,7 +36,7 @@ export const RepositoryList: FC<Props> = observer(function RepoList(props) {
     return (
         <ViewportList
             viewportRef={containerRef}
-            count={total}
+            count={items.length + 3}
             overscan={10}
         >
             {(index) => {
@@ -52,7 +51,7 @@ export const RepositoryList: FC<Props> = observer(function RepoList(props) {
                     )
                 }
                 if (loading || hasNextPage) {
-                    const isSentry = ind - items.length === 1
+                    const isSentry = ind - items.length === 0
                     return (
                         <ListItem key={ind} ref={isSentry ? sentryRef : null}>
                             <Skeleton component="div" variant="rectangular" width="100%" />
