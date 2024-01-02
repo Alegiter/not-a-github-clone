@@ -4,6 +4,7 @@ import { getGithubRepositories } from "~/shared/api"
 
 type Store = {
     items: Array<Repository>
+    itemIds: Set<string>
     total: number
     loading: boolean
     hasNextPage: boolean
@@ -14,6 +15,7 @@ type Store = {
 
 export const store = observable<Store>({
     items: [],
+    itemIds: new Set<string>(),
     total: 0,
     loading: false,
     hasNextPage: false,
@@ -25,6 +27,7 @@ export const store = observable<Store>({
 export function reset() {
     runInAction(() => {
         store.items = []
+        store.itemIds.clear()
         store.total = 0
         store.loading = false
         store.hasNextPage = false
@@ -63,13 +66,20 @@ async function load(query: string, limit: number, cursor?: string, order: "asc" 
         }
 
         const newItems = result.search.nodes.reduce<Array<Repository>>((acc, item) => {
-            if (item?.__typename === "Repository") {
-                const {owner, ...restItem} = item
-                acc.push({
-                    ...restItem,
-                    owner: owner.login
-                })
+            if (item?.__typename !== "Repository") {
+                return acc
             }
+            
+            if (store.itemIds.has(item.id)) {
+                return acc
+            }
+            store.itemIds.add(item.id)
+
+            const {owner, ...restItem} = item
+            acc.push({
+                ...restItem,
+                owner: owner.login
+            })
             return acc
         }, [])
         store.items = store.items.concat(newItems)
